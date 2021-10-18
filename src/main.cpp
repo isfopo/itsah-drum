@@ -5,6 +5,7 @@
 #include <Adafruit_ADXL343.h>
 #include <Adafruit_NeoTrellisM4.h>
 #include <MIDIUSB.h>
+#include "Note.h"
 
 #define MIDI_CHANNEL     0  // default channel # is 0
 // Set the value of first note, C is a good choice. Lowest C is 0.
@@ -22,7 +23,7 @@ uint32_t press_color = 0XFFFFFF;
 uint32_t off_color = 0X0;
 
 // grids
-
+//Note main_grid[8][4];
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
@@ -38,6 +39,23 @@ float ofMap(float value, float inputMin, float inputMax, float outputMin, float 
       }
     }
     return outVal;
+}
+
+void play(Note note)
+{
+  if (note.is_on) {
+    if (note.is_accented) 
+    {
+      trellis.noteOn(note.midi, 127);
+    } else {
+      trellis.noteOn(note.midi, 96);
+    }
+  }
+}
+
+void stop(Note note)
+{
+  trellis.noteOff(note.midi, 0);
 }
 
 // Input a value 0 to 255 to get a color value.
@@ -76,18 +94,18 @@ void loop() {
 
   midiEventPacket_t midi_in =  MidiUSB.read();
 
-  if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
+  if (midi_in.header == 3) { // transport start
+    Serial.println("start");
+    tick = sixteenthNoteToTicks(midi_in.byte2); // syncs ticks to transport
+  } else if (midi_in.header == 11) { // transport end
+    Serial.println("stop");
+  } else if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
     if ( tick % 12 == 0 ) {
       trellis.noteOff(36, 0);
       trellis.noteOn(36, 64);
       eighth_note++;
     }
     tick++;
-  } else if (midi_in.header == 3) { // transport start
-    Serial.println("start");
-    tick = sixteenthNoteToTicks(midi_in.byte2); // syncs ticks to transport
-  } else if (midi_in.header == 11) { // transport end
-    Serial.println("stop");
   }
   
   else if (midi_in.header != 0) {

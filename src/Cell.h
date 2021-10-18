@@ -7,12 +7,10 @@ class Cell
 {
   public: 
     Cell();
+    bool is_on;
     void toggle();
     void on();
     void off();
-
-  protected:
-    bool _is_on;
 };
 
 #endif
