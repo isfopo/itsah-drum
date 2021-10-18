@@ -100,6 +100,9 @@ void loop() {
     Serial.print("Keypad key: ");    Serial.println(key);
     Serial.print("MIDI note: ");     Serial.println(FIRST_MIDI_NOTE+key);
 
+    int col = e.bit.COL;
+    int row = e.bit.ROW;
+    
     if (e.bit.EVENT == KEY_JUST_PRESSED) {
       Serial.println(" pressed\n");
       trellis.setPixelColor(key, 0xFFFFFF);
