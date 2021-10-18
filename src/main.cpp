@@ -70,6 +70,11 @@ void loop() {
   midiEventPacket_t midi_in =  MidiUSB.read();
 
   if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
+    if ( tick % 12 == 0 ) {
+      trellis.noteOff(36, 0);
+      trellis.noteOn(36, 64);
+      eighth_note++;
+    }
     tick++;
   } else if (midi_in.header == 3) { // transport start
     Serial.println("start");
