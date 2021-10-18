@@ -11,8 +11,6 @@ class Note: public Cell
     int midi;
     bool is_accented;
     void set_note(int midi_note);
-    void play();
-    void stop();
     void toggle_accent();
 };
 
