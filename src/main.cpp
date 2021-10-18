@@ -16,7 +16,6 @@ Adafruit_NeoTrellisM4 trellis = Adafruit_NeoTrellisM4();
 Adafruit_ADXL343 accel = Adafruit_ADXL343(123, &Wire1);
 
 uint32_t tick = 0;
-uint32_t eighth_note = 0;
 
 // colors
 uint32_t press_color = 0XFFFFFF;
@@ -57,7 +56,7 @@ void play(Note note)
 }
 
 void stop(Note note)
-{
+{ 
   trellis.noteOff(note.midi, 0);
 }
 
@@ -78,6 +77,10 @@ uint32_t Wheel(byte WheelPos) {
 
 uint32_t sixteenthNoteToTicks(uint8_t sixteenthNote) {
   return sixteenthNote * 6;
+}
+
+uint32_t tickToEighthNote(uint32_t tick) {
+  return tick / 12;
 }
 
 void setup(){
@@ -116,14 +119,11 @@ void loop() {
   } else if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
 
     if ( tick % 12 == 0 ) {
-      for ( Note note: main_grid[eighth_note % 8] ) {
+      for ( Note note: main_grid[tickToEighthNote(tick) % 8] ) {
         play(note);
       }
-      eighth_note++;
     }
-
     tick++;
-
   }
   
   else if (midi_in.header != 0) {
