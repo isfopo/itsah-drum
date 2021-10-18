@@ -139,6 +139,11 @@ void loop() {
     if (e.bit.EVENT == KEY_JUST_PRESSED) {
       Serial.println(" pressed\n");
       trellis.setPixelColor(key, press_color);
+
+      main_grid[col][row].toggle();
+
+      Serial.println(main_grid[col][row].is_on);
+      Serial.println(main_grid[col][row].midi);
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED) {
       Serial.println(" released\n");
