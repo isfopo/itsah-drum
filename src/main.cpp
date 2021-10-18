@@ -117,5 +117,5 @@ void loop() {
 
   trellis.sendMIDI(); // send any pending MIDI messages
 
-  delay(10);
+  delay(1);
 }
