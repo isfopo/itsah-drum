@@ -72,7 +72,6 @@ void setup(){
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   trellis.tick();
 
   midiEventPacket_t midi_in =  MidiUSB.read();
@@ -105,9 +104,6 @@ void loop() {
   while (trellis.available()){
     keypadEvent e = trellis.read();
     int key = e.bit.KEY;
-    Serial.print("Keypad key: ");    Serial.println(key);
-    Serial.print("MIDI note: ");     Serial.println(FIRST_MIDI_NOTE+key);
-
     int col = e.bit.COL;
     int row = e.bit.ROW;
     
