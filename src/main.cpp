@@ -15,6 +15,14 @@ Adafruit_NeoTrellisM4 trellis = Adafruit_NeoTrellisM4();
 Adafruit_ADXL343 accel = Adafruit_ADXL343(123, &Wire1);
 
 uint32_t tick = 0;
+uint32_t eighth_note = 0;
+
+// colors
+uint32_t press_color = 0XFFFFFF;
+uint32_t off_color = 0X0;
+
+// grids
+
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
@@ -105,13 +113,11 @@ void loop() {
     
     if (e.bit.EVENT == KEY_JUST_PRESSED) {
       Serial.println(" pressed\n");
-      trellis.setPixelColor(key, 0xFFFFFF);
-      trellis.noteOn(FIRST_MIDI_NOTE+key, 64);
+      trellis.setPixelColor(key, press_color);
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED) {
       Serial.println(" released\n");
-      trellis.setPixelColor(key, 0x0);
-      trellis.noteOff(FIRST_MIDI_NOTE+key, 64);
+      trellis.setPixelColor(key, off_color);
     }
   }
 
