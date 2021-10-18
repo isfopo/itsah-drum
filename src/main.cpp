@@ -19,6 +19,7 @@ uint32_t tick = 0;
 
 // colors
 uint32_t press_color = 0XFFFFFF;
+uint32_t on_color = 0X00FF00;
 uint32_t off_color = 0X0;
 
 // grids
@@ -130,7 +131,7 @@ void loop() {
       }
       for ( Note note: main_grid[(tickToEighthNote(tick) - 1) % 8]) {
         stop(note);
-        trellis.setPixelColor(note.key, off_color);
+        trellis.setPixelColor(note.key, note.is_on ? on_color : off_color);
       }
     }
     tick++;
@@ -155,13 +156,11 @@ void loop() {
     
     if (e.bit.EVENT == KEY_JUST_PRESSED) {
       Serial.println(" pressed\n");
-      trellis.setPixelColor(key, press_color);
-
-      main_grid[col][row].toggle();
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED) {
       Serial.println(" released\n");
-      trellis.setPixelColor(key, off_color);
+      main_grid[col][row].toggle();
+      trellis.setPixelColor(key, main_grid[col][row].is_on ? on_color : off_color);
     }
   }
 
