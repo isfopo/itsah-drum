@@ -23,7 +23,10 @@ uint32_t press_color = 0XFFFFFF;
 uint32_t off_color = 0X0;
 
 // grids
-//Note main_grid[8][4];
+const int NUMBER_OF_COLUMNS = 8;
+const int NUMBER_OF_ROWS = 4;
+
+Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
@@ -87,6 +90,13 @@ void setup(){
   Serial.println("Enabling MIDI on USB");
   trellis.enableUSBMIDI(true);
   trellis.setUSBMIDIchannel(MIDI_CHANNEL);
+
+  for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
+    for (int j = NUMBER_OF_ROWS; j >= 0; j--) {
+      main_grid[i][j] = Note();
+      main_grid[i][j].set_note((35 + NUMBER_OF_ROWS) - j);
+    }
+  }
 }
 
 void loop() {
