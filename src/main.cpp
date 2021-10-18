@@ -56,7 +56,7 @@ void play(Note note)
 }
 
 void stop(Note note)
-{ 
+{
   trellis.noteOff(note.midi, 0);
 }
 
@@ -121,6 +121,9 @@ void loop() {
     if ( tick % 12 == 0 ) {
       for ( Note note: main_grid[tickToEighthNote(tick) % 8] ) {
         play(note);
+      }
+      for ( Note note: main_grid[(tickToEighthNote(tick) - 1) % 8]) {
+        stop(note);
       }
     }
     tick++;
