@@ -111,8 +111,9 @@ void loop() {
     Serial.println("stop");
   } else if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
     if ( tick % 12 == 0 ) {
-      trellis.noteOff(36, 0);
-      trellis.noteOn(36, 64);
+      for ( Note note: main_grid[eighth_note % 8] ) {
+        play(note);
+      }
       eighth_note++;
     }
     tick++;
