@@ -56,7 +56,7 @@ void play(Note note)
 }
 
 void stop(Note note)
-{
+{ 
   trellis.noteOff(note.midi, 0);
 }
 
@@ -83,6 +83,10 @@ uint32_t tickToEighthNote(uint32_t tick) {
   return tick / 12;
 }
 
+int coordinatesToKey( int col, int row ) {
+  return ( row * 8 ) + col;
+}
+
 void setup(){
   Serial.begin(115200);
     
@@ -95,9 +99,10 @@ void setup(){
   trellis.setUSBMIDIchannel(MIDI_CHANNEL);
 
   for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
-    for (int j = NUMBER_OF_ROWS; j >= 0; j--) {
+    for (int j = 0; j < NUMBER_OF_ROWS; j++) {
       main_grid[i][j] = Note();
-      main_grid[i][j].set_note((35 + NUMBER_OF_ROWS) - j);
+      main_grid[i][j].set_note(36 + j);
+      main_grid[i][j].set_key(coordinatesToKey(i, j));
     }
   }
 }
@@ -121,9 +126,11 @@ void loop() {
     if ( tick % 12 == 0 ) {
       for ( Note note: main_grid[tickToEighthNote(tick) % 8] ) {
         play(note);
+        trellis.setPixelColor(note.key, press_color);
       }
       for ( Note note: main_grid[(tickToEighthNote(tick) - 1) % 8]) {
         stop(note);
+        trellis.setPixelColor(note.key, off_color);
       }
     }
     tick++;
@@ -151,9 +158,6 @@ void loop() {
       trellis.setPixelColor(key, press_color);
 
       main_grid[col][row].toggle();
-
-      Serial.println(main_grid[col][row].is_on);
-      Serial.println(main_grid[col][row].midi);
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED) {
       Serial.println(" released\n");
