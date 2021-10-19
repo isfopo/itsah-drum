@@ -5,7 +5,6 @@
 #include <Adafruit_ADXL343.h>
 #include <Adafruit_NeoTrellisM4.h>
 #include <MIDIUSB.h>
-#include <Vector.h>
 #include "Note.h"
 
 #define MIDI_CHANNEL     0  // default channel # is 0
