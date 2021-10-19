@@ -9,6 +9,8 @@
 
 #define MIDI_CHANNEL 0 // default channel # is 0
 #define FIRST_MIDI_NOTE 36
+#define NUMBER_OF_COLUMNS_ON_TRELLIS 8
+#define NUMBER_OF_ROWS_ON_TRELLIS 4
 
 Adafruit_NeoTrellisM4 trellis = Adafruit_NeoTrellisM4();
 Adafruit_ADXL343 accel = Adafruit_ADXL343(123, &Wire1);
@@ -272,9 +274,9 @@ void loop()
         {
           main_mode = false;
 
-          for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
+          for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
           {
-            for (int j = 0; j < NUMBER_OF_ROWS; j++)
+            for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
             {
               trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j].is_on ? shift_color : off_color);
             }
@@ -283,9 +285,9 @@ void loop()
         else if (checkCombo(back_combo, sizeof(back_combo) / sizeof(back_combo[0]), pressed_keys))
         {
           main_mode = true;
-          for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
+          for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
           {
-            for (int j = 0; j < NUMBER_OF_ROWS; j++)
+            for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
             {
               trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j].is_on ? main_color : off_color);
             }
