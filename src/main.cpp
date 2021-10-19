@@ -222,7 +222,8 @@ void loop()
         stop(note);
         if (main_mode)
         {
-          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4 ) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset)) {
+          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset))
+          {
             trellis.setPixelColor(note.key, note.is_on ? main_color : off_color);
           }
         }
@@ -243,7 +244,8 @@ void loop()
         stop(note);
         if (!main_mode)
         {
-          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4 ) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset)) {
+          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset))
+          {
             trellis.setPixelColor(note.key, note.is_on ? shift_color : off_color);
           }
         }
@@ -303,22 +305,62 @@ void loop()
             }
           }
         }
-        else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys)) {
+        else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys))
+        {
           // light up offset keys for reference
-            Serial.println("combo pressed");
-          if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo[0]), pressed_keys)) {
-            if (row_offset > 0) {
+          if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo[0]), pressed_keys))
+          {
+            if (row_offset > 0)
+            {
               row_offset -= 4;
+              if (main_mode)
+              {
+                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                {
+                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+                  {
+                    trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+                  }
+                }
+              }
+              else
+              {
+                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                {
+                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+                  {
+                    trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+                  }
+                }
+              }
             }
-              Serial.println("up");
-              Serial.println(row_offset);
           }
-          else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo[0]), pressed_keys)) {
-            if (row_offset < 12) {
+          else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo[0]), pressed_keys))
+          {
+            if (row_offset < 12)
+            {
               row_offset += 4;
+              if (main_mode)
+              {
+                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                {
+                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+                  {
+                    trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+                  }
+                }
+              }
+              else
+              {
+                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                {
+                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+                  {
+                    trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+                  }
+                }
+              }
             }
-              Serial.println("down");
-              Serial.println(row_offset);
           }
         }
       }
@@ -333,7 +375,7 @@ void loop()
       {
         if (main_mode)
         {
-          main_grid[col][row + row_offset].toggle();                                                 // toggle note
+          main_grid[col][row + row_offset].toggle();                                                   // toggle note
           trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color); // toggle key light
         }
         else
