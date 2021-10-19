@@ -27,7 +27,7 @@ uint32_t off_color = 0X0;
 const int NUMBER_OF_COLUMNS = 8;
 const int NUMBER_OF_ROWS = 16;
 
-int row_offset = 4;
+int row_offset = 12;
 
 Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 Note shift_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
@@ -41,6 +41,9 @@ boolean main_mode = true;
 // combos
 int back_combo[] = {7, 28, 31};
 int shift_combo[] = {7, 20, 31};
+int offset_init_combo[] = {6, 31};
+int offset_up_combo[] = {6, 31, 3};
+int offset_down_combo[] = {6, 31, 27};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -170,7 +173,7 @@ void setup()
     {
       main_grid[i][j] = Note();
       main_grid[i][j].set_note(getGridNote(FIRST_MIDI_NOTE, NUMBER_OF_ROWS, j));
-      main_grid[i][j].set_key(coordinatesToKey(i, j));
+      main_grid[i][j].set_key(coordinatesToKey(i, j) % 32);
     }
   }
   for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
@@ -179,7 +182,7 @@ void setup()
     {
       shift_grid[i][j] = Note();
       shift_grid[i][j].set_note(getGridNote(FIRST_MIDI_NOTE, NUMBER_OF_ROWS, j));
-      shift_grid[i][j].set_key(coordinatesToKey(i, j));
+      shift_grid[i][j].set_key(coordinatesToKey(i, j) % 32);
     }
   }
 }
@@ -219,7 +222,12 @@ void loop()
         stop(note);
         if (main_mode)
         {
-          trellis.setPixelColor(note.key, note.is_on ? main_color : off_color);
+          Serial.println();
+          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4 ) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset)) {
+            Serial.print(note.midi);
+            Serial.print(" - ");
+            trellis.setPixelColor(note.key, note.is_on ? main_color : off_color);
+          }
         }
       }
     }
@@ -294,6 +302,15 @@ void loop()
               trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
             }
           }
+        }
+        else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo), pressed_keys)) {
+          // light up offset keys for reference
+        }
+        else if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo), pressed_keys)) {
+          
+        }
+        else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo), pressed_keys)) {
+          
         }
       }
     }
