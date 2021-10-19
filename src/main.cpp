@@ -270,29 +270,23 @@ void loop()
         combo_pressed = true;
         if (checkCombo(shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys))
         {
-          Serial.println("shift combo");
           main_mode = false;
 
           for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
           {
             for (int j = 0; j < NUMBER_OF_ROWS; j++)
             {
-              Serial.print(shift_grid[i][j].is_on);
-              Serial.print(" - ");
               trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j].is_on ? shift_color : off_color);
             }
           }
         }
         else if (checkCombo(back_combo, sizeof(back_combo) / sizeof(back_combo[0]), pressed_keys))
         {
-          Serial.println("back combo");
           main_mode = true;
           for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
           {
             for (int j = 0; j < NUMBER_OF_ROWS; j++)
             {
-              Serial.print(main_grid[i][j].is_on);
-              Serial.print(" - ");
               trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j].is_on ? main_color : off_color);
             }
           }
