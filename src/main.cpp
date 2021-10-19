@@ -8,8 +8,6 @@
 #include "Note.h"
 
 #define MIDI_CHANNEL     0  // default channel # is 0
-// Set the value of first note, C is a good choice. Lowest C is 0.
-// 36 is a good default. 48 is a high range. Set to 24 for a bass machine.
 #define FIRST_MIDI_NOTE 36
 
 Adafruit_NeoTrellisM4 trellis = Adafruit_NeoTrellisM4();
@@ -22,7 +20,6 @@ uint32_t press_color = 0XFFFFFF;
 uint32_t on_color = 0X00FF00;
 uint32_t off_color = 0X0;
 
-const int STARTING_MIDI_NOTE = 36;
 const int NUMBER_OF_COLUMNS = 8;
 const int NUMBER_OF_ROWS = 4;
 
