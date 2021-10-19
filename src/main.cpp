@@ -222,10 +222,7 @@ void loop()
         stop(note);
         if (main_mode)
         {
-          Serial.println();
           if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4 ) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset)) {
-            Serial.print(note.midi);
-            Serial.print(" - ");
             trellis.setPixelColor(note.key, note.is_on ? main_color : off_color);
           }
         }
