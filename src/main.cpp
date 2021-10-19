@@ -34,7 +34,7 @@ boolean shift_mode = false;
 
 // combos
 int back_combo[] = { 6, 20, 31 };
-int shift_combo[3] = { 7, 20, 31 };
+int shift_combo[] = { 7, 20, 31 };
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
