@@ -102,7 +102,7 @@ void setup(){
   for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
     for (int j = 0; j < NUMBER_OF_ROWS; j++) {
       main_grid[i][j] = Note();
-      main_grid[i][j].set_note(36 + j);
+      main_grid[i][j].set_note((36 + NUMBER_OF_ROWS - 1) - j);
       main_grid[i][j].set_key(coordinatesToKey(i, j));
     }
   }
