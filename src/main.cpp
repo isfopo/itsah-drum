@@ -215,11 +215,34 @@ void loop()
   else if (midi_in.header == 15)
   { // tick event - happens 24 times per quarter note
 
+    // play and stop notes
     if (tick % 12 == 0)
     {
       for (Note note : main_grid[tickToEighthNote(tick) % 8])
       {
         play(note);
+      }
+      for (Note note : main_grid[(tickToEighthNote(tick) - 1) % 8])
+      {
+        stop(note);
+      }
+    }
+    else if ((int)tick % 12 == swing)
+    {
+      for (Note note : shift_grid[tickToEighthNote(tick) % 8])
+      {
+        play(note);
+      }
+      for (Note note : shift_grid[(tickToEighthNote(tick) - 1) % 8])
+      {
+        stop(note);
+      }
+    }
+    // set lights
+    if (tick % 12 == 0)
+    {
+      for (Note note : main_grid[tickToEighthNote(tick) % 8])
+      {
         if (main_mode)
         {
           trellis.setPixelColor(note.key, column_color);
@@ -227,7 +250,6 @@ void loop()
       }
       for (Note note : main_grid[(tickToEighthNote(tick) - 1) % 8])
       {
-        stop(note);
         if (main_mode)
         {
           if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset))
@@ -237,11 +259,10 @@ void loop()
         }
       }
     }
-    else if (tick % 12 == 6)
+    else if (tick % 12 == swing)
     {
       for (Note note : shift_grid[tickToEighthNote(tick) % 8])
       {
-        play(note);
         if (!main_mode)
         {
           trellis.setPixelColor(note.key, column_color);
@@ -249,7 +270,6 @@ void loop()
       }
       for (Note note : shift_grid[(tickToEighthNote(tick) - 1) % 8])
       {
-        stop(note);
         if (!main_mode)
         {
           if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset))
