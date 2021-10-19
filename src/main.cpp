@@ -25,7 +25,9 @@ uint32_t shift_color = 0x0000FF;
 uint32_t off_color = 0X0;
 
 const int NUMBER_OF_COLUMNS = 8;
-const int NUMBER_OF_ROWS = 4;
+const int NUMBER_OF_ROWS = 16;
+
+int row_offset = 4;
 
 Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 Note shift_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
@@ -278,7 +280,7 @@ void loop()
           {
             for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
             {
-              trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j].is_on ? shift_color : off_color);
+              trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
             }
           }
         }
@@ -289,7 +291,7 @@ void loop()
           {
             for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
             {
-              trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j].is_on ? main_color : off_color);
+              trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
             }
           }
         }
@@ -305,13 +307,13 @@ void loop()
       {
         if (main_mode)
         {
-          main_grid[col][row].toggle();                                                 // toggle note
-          trellis.setPixelColor(key, main_grid[col][row].is_on ? main_color : off_color); // toggle key light
+          main_grid[col][row + row_offset].toggle();                                                 // toggle note
+          trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color); // toggle key light
         }
         else
         {
-          shift_grid[col][row].toggle();                                                    // toggle note
-          trellis.setPixelColor(key, shift_grid[col][row].is_on ? shift_color : off_color); // toggle key light
+          shift_grid[col][row + row_offset].toggle();                                                    // toggle note
+          trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color); // toggle key light
         }
       }
       else
