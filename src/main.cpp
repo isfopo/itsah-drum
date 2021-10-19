@@ -221,7 +221,7 @@ void loop()
         }
       }
     }
-    else if (tick % 12 == 7)
+    else if (tick % 12 == 6)
     {
       for (Note note : shift_grid[tickToEighthNote(tick) % 8])
       {
