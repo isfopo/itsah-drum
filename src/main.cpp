@@ -30,6 +30,7 @@ const int NUMBER_OF_COLUMNS = 8;
 const int NUMBER_OF_ROWS = 16;
 
 int row_offset = 12;
+int swing = 6;
 
 Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 Note shift_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
@@ -46,6 +47,11 @@ int shift_combo[] = {7, 20, 31};
 int offset_init_combo[] = {6, 30};
 int offset_up_combo[] = {11, 6, 30};
 int offset_down_combo[] = {19, 6, 30};
+int swing_init_combo[] = {14, 30};
+int swing_6_combo[] = {28, 14, 30};
+int swing_7_combo[] = {20, 14, 30};
+int swing_8_combo[] = {12, 14, 30};
+int swing_9_combo[] = {4, 14, 30};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -276,6 +282,14 @@ void loop()
       trellis.setPixelColor(offset_up_combo[0], ref_color_1);
       trellis.setPixelColor(offset_down_combo[0], ref_color_1);
     }
+    else if (checkCombo(swing_init_combo, sizeof(swing_init_combo) / sizeof(swing_init_combo[0]), pressed_keys))
+    {
+      // light up swing keys for reference
+      trellis.setPixelColor(swing_6_combo[0], ref_color_1);
+      trellis.setPixelColor(swing_7_combo[0], ref_color_1);
+      trellis.setPixelColor(swing_8_combo[0], ref_color_1);
+      trellis.setPixelColor(swing_9_combo[0], ref_color_1);
+    }
   }
 
   while (trellis.available())
@@ -370,6 +384,22 @@ void loop()
               }
             }
           }
+        }
+        else if (checkCombo(swing_6_combo, sizeof(swing_6_combo) / sizeof(swing_6_combo[0]), pressed_keys))
+        {
+          swing = 6;
+        }
+        else if (checkCombo(swing_7_combo, sizeof(swing_7_combo) / sizeof(swing_7_combo[0]), pressed_keys))
+        {
+          swing = 7;
+        }
+        else if (checkCombo(swing_8_combo, sizeof(swing_8_combo) / sizeof(swing_8_combo[0]), pressed_keys))
+        {
+          swing = 8;
+        }
+        else if (checkCombo(swing_9_combo, sizeof(swing_9_combo) / sizeof(swing_9_combo[0]), pressed_keys))
+        {
+          swing = 9;
         }
       }
     }
