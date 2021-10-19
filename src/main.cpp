@@ -5,6 +5,7 @@
 #include <Adafruit_ADXL343.h>
 #include <Adafruit_NeoTrellisM4.h>
 #include <MIDIUSB.h>
+#include <Vector.h>
 #include "Note.h"
 
 #define MIDI_CHANNEL     0  // default channel # is 0
@@ -27,6 +28,9 @@ const int NUMBER_OF_COLUMNS = 8;
 const int NUMBER_OF_ROWS = 4;
 
 Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
+
+boolean pressed_keys[32];
+boolean combo_pressed = false;
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
@@ -92,6 +96,18 @@ int getGridNote(int start, int rows, int index) {
   return (start + rows - 1) - index;
 }
 
+int numberOfButtonPressed( bool pressed_buttons[], int size ) {
+  int count = 0;
+
+  for ( int i = 0; i < size; ++i ) {
+    if (pressed_buttons[i]) {
+      count++;
+    }
+  }
+
+  return count;
+}
+
 void setup(){
   Serial.begin(115200);
     
@@ -122,11 +138,13 @@ void loop() {
     Serial.println("start");
     tick = sixteenthNoteToTicks(midi_in.byte2); // syncs ticks to transport
 
-  } else if (midi_in.header == 11) { // transport end
+  } 
+  else if (midi_in.header == 11) { // transport end
 
     Serial.println("stop");
 
-  } else if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
+  } 
+  else if (midi_in.header == 15) { // tick event - happens 24 times per quarter note
 
     if ( tick % 12 == 0 ) {
       for ( Note note: main_grid[tickToEighthNote(tick) % 8] ) {
@@ -160,11 +178,25 @@ void loop() {
     
     if (e.bit.EVENT == KEY_JUST_PRESSED) {
       Serial.println(" pressed\n");
+      pressed_keys[key] = true;
+      if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 2) {
+        combo_pressed = true;
+      }
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED) {
       Serial.println(" released\n");
-      main_grid[col][row].toggle();
-      trellis.setPixelColor(key, main_grid[col][row].is_on ? on_color : off_color);
+
+      pressed_keys[key] = false;
+
+      if (!combo_pressed) {
+        main_grid[col][row].toggle(); // toggle note
+        trellis.setPixelColor(key, main_grid[col][row].is_on ? on_color : off_color); // toggle key light
+      } 
+      else {
+        if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) == 0) {
+          combo_pressed = false;
+        }
+      }
     }
   }
 
