@@ -22,7 +22,7 @@ uint32_t press_color = 0XFFFFFF;
 uint32_t on_color = 0X00FF00;
 uint32_t off_color = 0X0;
 
-// grids
+const int STARTING_MIDI_NOTE = 36;
 const int NUMBER_OF_COLUMNS = 8;
 const int NUMBER_OF_ROWS = 4;
 
@@ -88,6 +88,10 @@ int coordinatesToKey( int col, int row ) {
   return ( row * 8 ) + col;
 }
 
+int getGridNote(int start, int rows, int index) {
+  return (start + rows - 1) - index;
+}
+
 void setup(){
   Serial.begin(115200);
     
@@ -102,7 +106,7 @@ void setup(){
   for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
     for (int j = 0; j < NUMBER_OF_ROWS; j++) {
       main_grid[i][j] = Note();
-      main_grid[i][j].set_note((36 + NUMBER_OF_ROWS - 1) - j);
+      main_grid[i][j].set_note(getGridNote(STARTING_MIDI_NOTE, NUMBER_OF_ROWS, j));
       main_grid[i][j].set_key(coordinatesToKey(i, j));
     }
   }
