@@ -41,9 +41,9 @@ boolean main_mode = true;
 // combos
 int back_combo[] = {7, 28, 31};
 int shift_combo[] = {7, 20, 31};
-int offset_init_combo[] = {6, 31};
-int offset_up_combo[] = {6, 31, 3};
-int offset_down_combo[] = {6, 31, 27};
+int offset_init_combo[] = {6, 30};
+int offset_up_combo[] = {6, 11, 30};
+int offset_down_combo[] = {6, 19, 30};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -243,7 +243,9 @@ void loop()
         stop(note);
         if (!main_mode)
         {
-          trellis.setPixelColor(note.key, note.is_on ? shift_color : off_color);
+          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4 ) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset)) {
+            trellis.setPixelColor(note.key, note.is_on ? shift_color : off_color);
+          }
         }
       }
     }
@@ -272,7 +274,8 @@ void loop()
     if (e.bit.EVENT == KEY_JUST_PRESSED)
     {
       Serial.println(" pressed\n");
-      //Serial.println(key);
+      Serial.print("key: ");
+      Serial.println(key);
       pressed_keys[key] = true;
       if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1)
       {
@@ -300,14 +303,23 @@ void loop()
             }
           }
         }
-        else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo), pressed_keys)) {
+        else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys)) {
           // light up offset keys for reference
-        }
-        else if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo), pressed_keys)) {
-          
-        }
-        else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo), pressed_keys)) {
-          
+            Serial.println("combo pressed");
+          if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo[0]), pressed_keys)) {
+            if (row_offset > 0) {
+              row_offset -= 4;
+            }
+              Serial.println("up");
+              Serial.println(row_offset);
+          }
+          else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo[0]), pressed_keys)) {
+            if (row_offset < 12) {
+              row_offset += 4;
+            }
+              Serial.println("down");
+              Serial.println(row_offset);
+          }
         }
       }
     }
