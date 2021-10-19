@@ -18,10 +18,12 @@ Adafruit_ADXL343 accel = Adafruit_ADXL343(123, &Wire1);
 uint32_t tick = 0;
 
 // colors
-uint32_t column_color = 0XFFFFFF;
-uint32_t shift_column_color = 0X00FFFF;
-uint32_t main_color = 0X00FF00;
-uint32_t shift_color = 0x0000FF;
+uint32_t column_color = 0XEDECEE;
+uint32_t shift_column_color = 0XEDECEE;
+uint32_t main_color = 0X61FFCA;
+uint32_t shift_color = 0xA277FF;
+uint32_t ref_color_1 = 0x00F0FF;
+uint32_t ref_color_2 = 0xFF00FF;
 uint32_t off_color = 0X0;
 
 const int NUMBER_OF_COLUMNS = 8;
@@ -42,8 +44,8 @@ boolean main_mode = true;
 int back_combo[] = {7, 28, 31};
 int shift_combo[] = {7, 20, 31};
 int offset_init_combo[] = {6, 30};
-int offset_up_combo[] = {6, 11, 30};
-int offset_down_combo[] = {6, 19, 30};
+int offset_up_combo[] = {11, 6, 30};
+int offset_down_combo[] = {19, 6, 30};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -266,6 +268,16 @@ void loop()
     Serial.println(midi_in.byte3);
   }
 
+  if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1)
+  {
+    if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys))
+    {
+      // light up offset keys for reference
+      trellis.setPixelColor(offset_up_combo[0], ref_color_1);
+      trellis.setPixelColor(offset_down_combo[0], ref_color_1);
+    }
+  }
+
   while (trellis.available())
   {
     keypadEvent e = trellis.read();
@@ -305,59 +317,55 @@ void loop()
             }
           }
         }
-        else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys))
+        else if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo[0]), pressed_keys))
         {
-          // light up offset keys for reference
-          if (checkCombo(offset_up_combo, sizeof(offset_up_combo) / sizeof(offset_up_combo[0]), pressed_keys))
+          if (row_offset > 0)
           {
-            if (row_offset > 0)
+            row_offset -= 4;
+            if (main_mode)
             {
-              row_offset -= 4;
-              if (main_mode)
+              for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
               {
-                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
-                  {
-                    trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
-                  }
+                  trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
                 }
               }
-              else
+            }
+            else
+            {
+              for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
               {
-                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
-                  {
-                    trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
-                  }
+                  trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
                 }
               }
             }
           }
-          else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo[0]), pressed_keys))
+        }
+        else if (checkCombo(offset_down_combo, sizeof(offset_down_combo) / sizeof(offset_down_combo[0]), pressed_keys))
+        {
+          if (row_offset < 12)
           {
-            if (row_offset < 12)
+            row_offset += 4;
+            if (main_mode)
             {
-              row_offset += 4;
-              if (main_mode)
+              for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
               {
-                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
-                  {
-                    trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
-                  }
+                  trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
                 }
               }
-              else
+            }
+            else
+            {
+              for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
               {
-                for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+                for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
-                  {
-                    trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
-                  }
+                  trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
                 }
               }
             }
@@ -388,6 +396,26 @@ void loop()
       {
         if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) == 0)
         {
+          if (main_mode)
+          {
+            for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+            {
+              for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+              {
+                trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+              }
+            }
+          }
+          else
+          {
+            for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+            {
+              for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+              {
+                trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+              }
+            }
+          }
           combo_pressed = false;
         }
       }
