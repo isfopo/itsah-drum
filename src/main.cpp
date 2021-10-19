@@ -28,6 +28,14 @@ Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 boolean pressed_keys[32];
 boolean combo_pressed = false;
 
+// modes
+boolean main_mode = true;
+boolean shift_mode = false;
+
+// combos
+int back_combo[] = { 6, 20, 31 };
+int shift_combo[3] = { 7, 20, 31 };
+
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
     float outVal = ((value - inputMin) / (inputMax - inputMin) * (outputMax - outputMin) + outputMin);
@@ -104,6 +112,15 @@ int numberOfButtonPressed( bool pressed_buttons[], int size ) {
   return count;
 }
 
+bool checkCombo( int combo[], int size, bool pressed_buttons[] ) {
+  for ( int i = 0; i < size; i++ ) {
+    if (!pressed_buttons[combo[i]]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void setup(){
   Serial.begin(115200);
     
@@ -118,7 +135,7 @@ void setup(){
   for (int i = 0; i < NUMBER_OF_COLUMNS; i++) {
     for (int j = 0; j < NUMBER_OF_ROWS; j++) {
       main_grid[i][j] = Note();
-      main_grid[i][j].set_note(getGridNote(STARTING_MIDI_NOTE, NUMBER_OF_ROWS, j));
+      main_grid[i][j].set_note(getGridNote(FIRST_MIDI_NOTE, NUMBER_OF_ROWS, j));
       main_grid[i][j].set_key(coordinatesToKey(i, j));
     }
   }
@@ -174,9 +191,18 @@ void loop() {
     
     if (e.bit.EVENT == KEY_JUST_PRESSED) {
       Serial.println(" pressed\n");
+      //Serial.println(key);
       pressed_keys[key] = true;
-      if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 2) {
+      if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1) {
         combo_pressed = true;
+        if ( checkCombo( shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys) ) {
+          Serial.println("shift combo");
+          shift_mode = true;
+          main_mode = false;
+        } else if ( checkCombo( back_combo, sizeof(back_combo) / sizeof(back_combo[0]), pressed_keys) ) {
+          shift_mode = true;
+          main_mode = false;
+        }
       }
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED) {
