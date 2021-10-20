@@ -217,22 +217,22 @@ void loop()
     // play and stop notes
     if (tick % 12 == 0)
     {
-      for (Note note : main_grid[tickToEighthNote(tick) % 8])
+      for (Note note : main_grid[tickToEighthNote(tick) % last_step])
       {
         play(note);
       }
-      for (Note note : main_grid[(tickToEighthNote(tick) - 1) % 8])
+      for (Note note : main_grid[(tickToEighthNote(tick) - 1) % last_step])
       {
         stop(note);
       }
     }
     else if ((int) (tick % 12) == swing)
     {
-      for (Note note : shift_grid[tickToEighthNote(tick) % 8])
+      for (Note note : shift_grid[tickToEighthNote(tick) % last_step])
       {
         play(note);
       }
-      for (Note note : shift_grid[(tickToEighthNote(tick) - 1) % 8])
+      for (Note note : shift_grid[(tickToEighthNote(tick) - 1) % last_step])
       {
         stop(note);
       }
