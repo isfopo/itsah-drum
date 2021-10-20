@@ -55,6 +55,7 @@ int swing_7_combo[] = {20, 14, 30};
 int swing_8_combo[] = {12, 14, 30};
 int swing_9_combo[] = {4, 14, 30};
 
+
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
 {
@@ -80,6 +81,7 @@ float ofMap(float value, float inputMin, float inputMax, float outputMin, float 
   return outVal;
 }
 
+
 void play(Note note)
 {
   if (note.is_on)
@@ -95,10 +97,12 @@ void play(Note note)
   }
 }
 
+
 void stop(Note note)
 {
   trellis.noteOff(note.midi, 0);
 }
+
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
@@ -118,10 +122,12 @@ uint32_t Wheel(byte WheelPos)
   return trellis.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
+
 uint32_t sixteenthNoteToTicks(uint8_t sixteenthNote)
 {
   return sixteenthNote * 6;
 }
+
 
 uint32_t tickToEighthNote(uint32_t tick)
 {
@@ -142,9 +148,11 @@ boolean isInRangeOfRows(int midi_note) {
   return ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= midi_note && midi_note < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset);
 }
 
+
 int getColumnOffset (uint32_t tick) {
   return ((tick / 96) % (last_step / 8)) * 8;
 }
+
 
 int numberOfButtonPressed(bool pressed_buttons[], int size)
 {
@@ -161,6 +169,7 @@ int numberOfButtonPressed(bool pressed_buttons[], int size)
   return count;
 }
 
+
 bool checkCombo(int combo[], int size, bool pressed_buttons[])
 {
   for (int i = 0; i < size; i++)
@@ -172,6 +181,7 @@ bool checkCombo(int combo[], int size, bool pressed_buttons[])
   }
   return true;
 }
+
 
 void setup()
 {
@@ -205,6 +215,7 @@ void setup()
   }
 }
 
+
 void loop()
 {
   trellis.tick();
@@ -213,7 +224,6 @@ void loop()
 
   if (midi_in.header == 3)
   { // transport start
-
     Serial.println("start");
     tick = sixteenthNoteToTicks(midi_in.byte2); // syncs ticks to transport
   }
