@@ -134,6 +134,13 @@ uint32_t tickToEighthNote(uint32_t tick)
   return tick / 12;
 }
 
+
+uint32_t tickToMeasure(uint32_t tick)
+{
+  return tick / 96;
+}
+
+
 int coordinatesToKey(int col, int row)
 {
   return (row * 8) + col;
