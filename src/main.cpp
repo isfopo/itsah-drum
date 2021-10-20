@@ -9,6 +9,7 @@
 
 #define MIDI_CHANNEL 0 // default channel # is 0
 #define FIRST_MIDI_NOTE 36
+#define NUMBER_OF_KEYS_ON_TRELLIS 32
 #define NUMBER_OF_COLUMNS_ON_TRELLIS 8
 #define NUMBER_OF_ROWS_ON_TRELLIS 4
 
@@ -42,6 +43,7 @@ boolean combo_pressed = false;
 
 // modes
 boolean main_mode = true;
+boolean manual_note_play_mode = false;
 
 // combos
 int back_combo[] = {7, 28, 31};
@@ -56,6 +58,8 @@ int swing_6_combo[] = {28, 14, 30};
 int swing_7_combo[] = {20, 14, 30};
 int swing_8_combo[] = {12, 14, 30};
 int swing_9_combo[] = {4, 14, 30};
+int manual_note_play_combo[] = {13, 29};
+int manual_note_record_combo[] = {5, 29};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -180,6 +184,28 @@ bool checkCombo(int combo[], int size, bool pressed_buttons[])
     }
   }
   return true;
+}
+
+boolean isOnLeftHalfOfTrellis(int key) {
+  return  key % NUMBER_OF_COLUMNS_ON_TRELLIS < NUMBER_OF_COLUMNS_ON_TRELLIS / 2;
+}
+
+int mapKeyToLeftHalfOfTrellis(int key) {
+  if ( key % NUMBER_OF_COLUMNS_ON_TRELLIS == NUMBER_OF_COLUMNS_ON_TRELLIS / 2) {
+    // https://www.desmos.com/calculator/xy1aphhomd
+    if ( key < 8 ) {
+      return (key * -4) + 15;
+    }
+    else if ( key < 16 ) {
+      return (key * -4) + 46;
+    }
+    else if ( key < 24 ) {
+      return (key * -4) + 77;
+    }
+    else if ( key < 32 ) {
+      return (key * -4) + 108;
+    }
+  }
 }
 
 void setup()
@@ -351,6 +377,16 @@ void loop()
       trellis.setPixelColor(swing_8_combo[0], ref_color_1);
       trellis.setPixelColor(swing_9_combo[0], ref_color_1);
     }
+    else if (checkCombo(manual_note_play_combo, sizeof(manual_note_play_combo) / sizeof(manual_note_play_combo[0]), pressed_keys)) {
+      manual_note_play_mode = true;
+      for (int i = 0; i < NUMBER_OF_KEYS_ON_TRELLIS; i++)
+      {
+        if (isOnLeftHalfOfTrellis(i))
+        {
+          trellis.setPixelColor(i, ref_color_1);
+        }
+      }
+    }
   }
 
   while (trellis.available())
@@ -369,7 +405,10 @@ void loop()
       if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1)
       {
         combo_pressed = true;
-        if (checkCombo(shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys))
+        if (manual_note_play_mode && isOnLeftHalfOfTrellis(key)) {
+          trellis.noteOn(FIRST_MIDI_NOTE + mapKeyToLeftHalfOfTrellis(key), 96);
+        }
+        else if (checkCombo(shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys))
         {
           main_mode = false;
 
@@ -496,6 +535,10 @@ void loop()
           shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                            // toggle note
           trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color); // toggle key light
         }
+
+        if (manual_note_play_mode) {
+          manual_note_play_mode = false;
+        }
       }
       else
       {
@@ -522,6 +565,9 @@ void loop()
             }
           }
           combo_pressed = false;
+        }
+        else if (manual_note_play_mode && isOnLeftHalfOfTrellis(key)) {
+          trellis.noteOff(FIRST_MIDI_NOTE + mapKeyToLeftHalfOfTrellis(key), 0);
         }
       }
     }
