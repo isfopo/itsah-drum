@@ -142,6 +142,10 @@ boolean isInRangeOfRows(int midi_note) {
   return ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= midi_note && midi_note < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset);
 }
 
+int getColumnOffset (uint32_t tick) {
+  return ((tick / 96) % (last_step / 8)) * 8;
+}
+
 int numberOfButtonPressed(bool pressed_buttons[], int size)
 {
   int count = 0;
@@ -240,6 +244,29 @@ void loop()
       }
     }
     // set lights
+    if (tick % TICKS_IN_MEASURE == 0)
+    {
+      if (main_mode)
+      {
+        for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+        {
+          for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+          {
+            trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? main_color : off_color);
+          }
+        }
+      }
+      else
+      {
+        for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
+        {
+          for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
+          {
+            trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? shift_color : off_color);
+          }
+        }
+      }
+    }
     if (tick % 12 == 0)
     {
       for (Note note : main_grid[tickToEighthNote(tick) % 8])
@@ -249,7 +276,7 @@ void loop()
           trellis.setPixelColor(note.key, column_color);
         }
       }
-      for (Note note : main_grid[(tickToEighthNote(tick) - 1) % 8])
+      for (Note note : main_grid[((tickToEighthNote(tick) - 1) % 8) + getColumnOffset(tick)])
       {
         if (main_mode)
         {
@@ -269,7 +296,7 @@ void loop()
           trellis.setPixelColor(note.key, column_color);
         }
       }
-      for (Note note : shift_grid[(tickToEighthNote(tick) - 1) % 8])
+      for (Note note : shift_grid[((tickToEighthNote(tick) - 1) % 8) + getColumnOffset(tick)])
       {
         if (!main_mode)
         {
