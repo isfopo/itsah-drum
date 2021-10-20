@@ -201,7 +201,7 @@ void setup()
     {
       main_grid[i][j] = Note();
       main_grid[i][j].set_note(getGridNote(FIRST_MIDI_NOTE, NUMBER_OF_ROWS, j));
-      main_grid[i][j].set_key(coordinatesToKey(i, j) % 32);
+      main_grid[i][j].set_key(coordinatesToKey(i % 8, j % 4));
     }
   }
   for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
@@ -210,7 +210,7 @@ void setup()
     {
       shift_grid[i][j] = Note();
       shift_grid[i][j].set_note(getGridNote(FIRST_MIDI_NOTE, NUMBER_OF_ROWS, j));
-      shift_grid[i][j].set_key(coordinatesToKey(i, j) % 32);
+      shift_grid[i][j].set_key(coordinatesToKey(i % 8, j % 4));
     }
   }
 }
@@ -474,12 +474,12 @@ void loop()
       {
         if (main_mode)
         {
-          main_grid[col][row + row_offset].toggle();                                                   // toggle note
+          main_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                                                   // toggle note
           trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color); // toggle key light
         }
         else
         {
-          shift_grid[col][row + row_offset].toggle();                                                    // toggle note
+          shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                                                    // toggle note
           trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color); // toggle key light
         }
       }
@@ -493,7 +493,7 @@ void loop()
             {
               for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
               {
-                trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+                trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? main_color : off_color);
               }
             }
           }
@@ -503,7 +503,7 @@ void loop()
             {
               for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
               {
-                trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+                trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? shift_color : off_color);
               }
             }
           }
