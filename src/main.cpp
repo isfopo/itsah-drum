@@ -211,11 +211,6 @@ void loop()
     Serial.println("start");
     tick = sixteenthNoteToTicks(midi_in.byte2); // syncs ticks to transport
   }
-  else if (midi_in.header == 11)
-  { // transport end
-
-    Serial.println("stop");
-  }
   else if (midi_in.header == 15)
   { // tick event - happens 24 times per quarter note
 
@@ -285,7 +280,10 @@ void loop()
     }
     tick++;
   }
-
+  else if (midi_in.header == 11)
+  { // transport end
+    Serial.println("stop");
+  }
   else if (midi_in.header != 0)
   {
     Serial.println("message in");
