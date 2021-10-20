@@ -28,8 +28,10 @@ uint32_t off_color = 0X0;
 
 const int NUMBER_OF_COLUMNS = 8;
 const int NUMBER_OF_ROWS = 16;
+const int TICKS_IN_MEASURE = 96;
 
 int row_offset = 12;
+int last_step = 16;
 int swing = 6;
 
 Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
