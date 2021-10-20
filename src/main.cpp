@@ -26,7 +26,7 @@ uint32_t ref_color_1 = 0x00F0FF;
 uint32_t ref_color_2 = 0xFF00FF;
 uint32_t off_color = 0X0;
 
-const int NUMBER_OF_COLUMNS = 8;
+const int NUMBER_OF_COLUMNS = 32;
 const int NUMBER_OF_ROWS = 16;
 const int TICKS_IN_MEASURE = 96;
 
