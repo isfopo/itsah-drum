@@ -136,6 +136,10 @@ int getGridNote(int start, int rows, int index)
   return (start + rows - 1) - index;
 }
 
+boolean isInRangeOfRows(int midi_note) {
+  return ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= midi_note && midi_note < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset);
+}
+
 int numberOfButtonPressed(bool pressed_buttons[], int size)
 {
   int count = 0;
@@ -252,7 +256,7 @@ void loop()
       {
         if (main_mode)
         {
-          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset))
+          if (isInRangeOfRows(note.midi))
           {
             trellis.setPixelColor(note.key, note.is_on ? main_color : off_color);
           }
@@ -272,7 +276,7 @@ void loop()
       {
         if (!main_mode)
         {
-          if (((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - 4) <= note.midi && note.midi < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset))
+          if (isInRangeOfRows(note.midi))
           {
             trellis.setPixelColor(note.key, note.is_on ? shift_color : off_color);
           }
