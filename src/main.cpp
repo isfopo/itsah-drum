@@ -451,14 +451,14 @@ void loop()
           if (last_step > NUMBER_OF_COLUMNS_ON_TRELLIS)
           {
             last_step -= NUMBER_OF_COLUMNS_ON_TRELLIS;
-          } // could shift by 1 if less than 8?
+          }
         }
         else if (checkCombo(last_step_right_combo, sizeof(last_step_right_combo) / sizeof(last_step_right_combo[0]), pressed_keys))
         {
           if (last_step < NUMBER_OF_COLUMNS)
           {
             last_step += NUMBER_OF_COLUMNS_ON_TRELLIS;
-          } // could shift by 1 if less than 8?
+          }
         }
         else if (checkCombo(swing_6_combo, sizeof(swing_6_combo) / sizeof(swing_6_combo[0]), pressed_keys))
         {
