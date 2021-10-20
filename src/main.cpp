@@ -31,7 +31,7 @@ const int NUMBER_OF_ROWS = 16;
 const int TICKS_IN_MEASURE = 96;
 
 int row_offset = 12;
-int last_step = 16;
+int last_step = 8;
 int swing = 6;
 
 Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
@@ -49,12 +49,13 @@ int shift_combo[] = {7, 20, 31};
 int offset_init_combo[] = {6, 30};
 int offset_up_combo[] = {11, 6, 30};
 int offset_down_combo[] = {19, 6, 30};
+int last_step_left_combo[] = {18, 6, 30};
+int last_step_right_combo[] = {20, 6, 30};
 int swing_init_combo[] = {14, 30};
 int swing_6_combo[] = {28, 14, 30};
 int swing_7_combo[] = {20, 14, 30};
 int swing_8_combo[] = {12, 14, 30};
 int swing_9_combo[] = {4, 14, 30};
-
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -81,7 +82,6 @@ float ofMap(float value, float inputMin, float inputMax, float outputMin, float 
   return outVal;
 }
 
-
 void play(Note note)
 {
   if (note.is_on)
@@ -97,12 +97,10 @@ void play(Note note)
   }
 }
 
-
 void stop(Note note)
 {
   trellis.noteOff(note.midi, 0);
 }
-
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
@@ -122,46 +120,40 @@ uint32_t Wheel(byte WheelPos)
   return trellis.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
-
 uint32_t sixteenthNoteToTicks(uint8_t sixteenthNote)
 {
   return sixteenthNote * 6;
 }
-
 
 uint32_t tickToEighthNote(uint32_t tick)
 {
   return tick / 12;
 }
 
-
 uint32_t tickToMeasure(uint32_t tick)
 {
   return tick / 96;
 }
-
 
 int coordinatesToKey(int col, int row)
 {
   return (row * 8) + col;
 }
 
-
 int getGridNote(int start, int rows, int index)
 {
   return (start + rows - 1) - index;
 }
 
-
-boolean isInRangeOfRows(int midi_note) {
+boolean isInRangeOfRows(int midi_note)
+{
   return ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - NUMBER_OF_ROWS_ON_TRELLIS) <= midi_note && midi_note < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset);
 }
 
-
-int getColumnOffset (uint32_t tick) {
+int getColumnOffset(uint32_t tick)
+{
   return ((tick / 96) % (last_step / 8)) * 8;
 }
-
 
 int numberOfButtonPressed(bool pressed_buttons[], int size)
 {
@@ -178,7 +170,6 @@ int numberOfButtonPressed(bool pressed_buttons[], int size)
   return count;
 }
 
-
 bool checkCombo(int combo[], int size, bool pressed_buttons[])
 {
   for (int i = 0; i < size; i++)
@@ -190,7 +181,6 @@ bool checkCombo(int combo[], int size, bool pressed_buttons[])
   }
   return true;
 }
-
 
 void setup()
 {
@@ -223,7 +213,6 @@ void setup()
     }
   }
 }
-
 
 void loop()
 {
@@ -351,6 +340,8 @@ void loop()
       // light up offset keys for reference
       trellis.setPixelColor(offset_up_combo[0], ref_color_1);
       trellis.setPixelColor(offset_down_combo[0], ref_color_1);
+      trellis.setPixelColor(last_step_left_combo[0], ref_color_2);
+      trellis.setPixelColor(last_step_right_combo[0], ref_color_2);
     }
     else if (checkCombo(swing_init_combo, sizeof(swing_init_combo) / sizeof(swing_init_combo[0]), pressed_keys))
     {
@@ -405,7 +396,7 @@ void loop()
         {
           if (row_offset > 0)
           {
-            row_offset -= 4;
+            row_offset -= NUMBER_OF_ROWS_ON_TRELLIS;
             if (main_mode)
             {
               for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
@@ -432,7 +423,7 @@ void loop()
         {
           if (row_offset < 12)
           {
-            row_offset += 4;
+            row_offset += NUMBER_OF_ROWS_ON_TRELLIS;
             if (main_mode)
             {
               for (int i = 0; i < NUMBER_OF_COLUMNS_ON_TRELLIS; i++)
@@ -454,6 +445,20 @@ void loop()
               }
             }
           }
+        }
+        else if (checkCombo(last_step_left_combo, sizeof(last_step_left_combo) / sizeof(last_step_left_combo[0]), pressed_keys))
+        {
+          if (last_step > NUMBER_OF_COLUMNS_ON_TRELLIS)
+          {
+            last_step -= NUMBER_OF_COLUMNS_ON_TRELLIS;
+          } // could shift by 1 if less than 8?
+        }
+        else if (checkCombo(last_step_right_combo, sizeof(last_step_right_combo) / sizeof(last_step_right_combo[0]), pressed_keys))
+        {
+          if (last_step < NUMBER_OF_COLUMNS)
+          {
+            last_step += NUMBER_OF_COLUMNS_ON_TRELLIS;
+          } // could shift by 1 if less than 8?
         }
         else if (checkCombo(swing_6_combo, sizeof(swing_6_combo) / sizeof(swing_6_combo[0]), pressed_keys))
         {
@@ -483,12 +488,12 @@ void loop()
       {
         if (main_mode)
         {
-          main_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                                                   // toggle note
+          main_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                           // toggle note
           trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color); // toggle key light
         }
         else
         {
-          shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                                                    // toggle note
+          shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                            // toggle note
           trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color); // toggle key light
         }
       }
