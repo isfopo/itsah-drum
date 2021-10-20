@@ -226,7 +226,7 @@ void loop()
         stop(note);
       }
     }
-    else if ((int) (tick % 12) == swing)
+    else if ((int)(tick % 12) == swing)
     {
       for (Note note : shift_grid[tickToEighthNote(tick) % last_step])
       {
@@ -258,7 +258,7 @@ void loop()
         }
       }
     }
-    else if ((int) (tick % 12) == swing)
+    else if ((int)(tick % 12) == swing)
     {
       for (Note note : shift_grid[tickToEighthNote(tick) % 8])
       {
