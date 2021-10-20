@@ -139,10 +139,12 @@ int coordinatesToKey(int col, int row)
   return (row * 8) + col;
 }
 
+
 int getGridNote(int start, int rows, int index)
 {
   return (start + rows - 1) - index;
 }
+
 
 boolean isInRangeOfRows(int midi_note) {
   return ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset - NUMBER_OF_ROWS_ON_TRELLIS) <= midi_note && midi_note < ((FIRST_MIDI_NOTE + NUMBER_OF_ROWS) - row_offset);
