@@ -32,7 +32,7 @@ uint32_t off_color = 0X0;
 const int NUMBER_OF_COLUMNS = 32;
 const int NUMBER_OF_ROWS = 16;
 const int TICKS_IN_MEASURE = 96;
-const int HOLD_TIME = 1000;
+const int HOLD_TIME = 500;
 
 int row_offset = 12;
 int last_step = 8;
