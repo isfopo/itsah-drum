@@ -511,7 +511,8 @@ void loop()
             shift_grid[getPostitionFromTick(tick, last_step, swing)][mapKeyToRow(key)].on();
           }
         }
-        else if (manual_cc_mode && isOnLeftHalfOfTrellis(key) && checkCombo(manual_cc_combo, sizeof(manual_cc_combo) / sizeof(manual_cc_combo[0]), pressed_keys)) {
+        else if (manual_cc_mode && isOnLeftHalfOfTrellis(key) && checkCombo(manual_cc_combo, sizeof(manual_cc_combo) / sizeof(manual_cc_combo[0]), pressed_keys))
+        {
           trellis.controlChange(manual_cc_channels[mapKeyToLeftHalfOfTrellis(key)], 127);
         }
         else if (checkCombo(shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys))
@@ -711,7 +712,8 @@ void loop()
         {
           trellis.noteOff(FIRST_MIDI_NOTE + mapKeyToLeftHalfOfTrellis(key), 0);
         }
-        else if (manual_cc_mode && isOnLeftHalfOfTrellis(key)) {
+        else if (manual_cc_mode && isOnLeftHalfOfTrellis(key))
+        {
           trellis.controlChange(manual_cc_channels[mapKeyToLeftHalfOfTrellis(key)], 0);
         }
       }
