@@ -62,6 +62,7 @@ int swing_8_combo[] = {12, 14, 30};
 int swing_9_combo[] = {4, 14, 30};
 int manual_note_play_combo[] = {13, 29};
 int manual_note_record_combo[] = {5, 29};
+int clear_combo[] = {4, 7, 31};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -562,6 +563,23 @@ void loop()
         else if (checkCombo(swing_9_combo, sizeof(swing_9_combo) / sizeof(swing_9_combo[0]), pressed_keys))
         {
           swing = 9;
+        }
+        else if (checkCombo(clear_combo, sizeof(clear_combo) / sizeof(clear_combo[0]), pressed_keys))
+        {
+          for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
+          {
+            for (int j = 0; j < NUMBER_OF_ROWS; j++)
+            {
+              main_grid[i][j].off();
+            }
+          }
+          for (int i = 0; i < NUMBER_OF_COLUMNS; i++)
+          {
+            for (int j = 0; j < NUMBER_OF_ROWS; j++)
+            {
+              shift_grid[i][j].off();
+            }
+          }
         }
       }
     }
