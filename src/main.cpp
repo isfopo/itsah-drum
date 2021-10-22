@@ -217,6 +217,10 @@ int mapKeyToLeftHalfOfTrellis(int key)
   }
 }
 
+int mapKeyToRow(int key) {
+  return (mapKeyToLeftHalfOfTrellis(key) * -1) + 15;
+}
+
 int getPostitionFromTick(int tick, int last_step, int swing) {
   return (int)((tick%(last_step*12)/(float)swing) / 2);
 }
@@ -445,11 +449,11 @@ void loop()
           trellis.noteOn(FIRST_MIDI_NOTE + mapKeyToLeftHalfOfTrellis(key), 96);
           if (!is_upbeat)
           {
-            main_grid[getPostitionFromTick(tick, last_step, swing)][6].on();
+            main_grid[getPostitionFromTick(tick, last_step, swing)][mapKeyToRow(key)].on();
           }
           else
           {
-            shift_grid[getPostitionFromTick(tick, last_step, swing)][6].on();
+            shift_grid[getPostitionFromTick(tick, last_step, swing)][mapKeyToRow(key)].on();
           }
         }
         else if (checkCombo(shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys))
