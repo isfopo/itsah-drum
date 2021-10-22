@@ -27,6 +27,7 @@ uint32_t main_accent_color = 0X61FF00; // should be the same color as main color
 uint32_t shift_accent_color = 0xFF77FF;
 uint32_t ref_color_1 = 0x00F0FF;
 uint32_t ref_color_2 = 0xFF00FF;
+uint32_t ref_color_3 = 0xFF0F00;
 uint32_t off_color = 0X0;
 
 const int NUMBER_OF_COLUMNS = 32;
@@ -50,6 +51,7 @@ boolean is_upbeat = false;
 boolean main_mode = true;
 boolean manual_note_play_mode = false;
 boolean manual_note_record_mode = false;
+boolean manual_cc_mode = false;
 
 // combos
 int show_combo[] = {7, 31};
@@ -68,6 +70,26 @@ int swing_8_combo[] = {12, 14, 30};
 int swing_9_combo[] = {4, 14, 30};
 int manual_note_play_combo[] = {13, 29};
 int manual_note_record_combo[] = {5, 29};
+int manual_cc_combo[] = {4, 28};
+
+int manual_cc_channels[] = {
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -444,6 +466,17 @@ void loop()
         }
       }
     }
+    else if (checkCombo(manual_cc_combo, sizeof(manual_cc_combo) / sizeof(manual_cc_combo[0]), pressed_keys))
+    {
+      manual_cc_mode = true;
+      for (int i = 0; i < NUMBER_OF_KEYS_ON_TRELLIS; i++)
+      {
+        if (isOnLeftHalfOfTrellis(i))
+        {
+          trellis.setPixelColor(i, ref_color_3);
+        }
+      }
+    }
   }
 
   while (trellis.available())
@@ -477,6 +510,9 @@ void loop()
           {
             shift_grid[getPostitionFromTick(tick, last_step, swing)][mapKeyToRow(key)].on();
           }
+        }
+        else if (manual_cc_mode && isOnLeftHalfOfTrellis(key) && checkCombo(manual_cc_combo, sizeof(manual_cc_combo) / sizeof(manual_cc_combo[0]), pressed_keys)) {
+          trellis.controlChange(manual_cc_channels[mapKeyToLeftHalfOfTrellis(key)], 127);
         }
         else if (checkCombo(shift_combo, sizeof(shift_combo) / sizeof(shift_combo[0]), pressed_keys))
         {
@@ -674,6 +710,9 @@ void loop()
         else if (manual_note_record_mode && isOnLeftHalfOfTrellis(key))
         {
           trellis.noteOff(FIRST_MIDI_NOTE + mapKeyToLeftHalfOfTrellis(key), 0);
+        }
+        else if (manual_cc_mode && isOnLeftHalfOfTrellis(key)) {
+          trellis.controlChange(manual_cc_channels[mapKeyToLeftHalfOfTrellis(key)], 0);
         }
       }
     }
