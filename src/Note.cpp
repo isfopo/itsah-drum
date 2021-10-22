@@ -18,4 +18,5 @@ void Note::set_key(int index)
 void Note::toggle_accent()
 {
   is_accented = !is_accented;
+  is_on = is_accented;
 };

@@ -30,6 +30,7 @@ uint32_t off_color = 0X0;
 const int NUMBER_OF_COLUMNS = 32;
 const int NUMBER_OF_ROWS = 16;
 const int TICKS_IN_MEASURE = 96;
+const int HOLD_TIME = 1000;
 
 int row_offset = 12;
 int last_step = 8;
@@ -39,6 +40,7 @@ Note main_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 Note shift_grid[NUMBER_OF_COLUMNS][NUMBER_OF_ROWS];
 
 boolean pressed_keys[32];
+unsigned long when_key_was_pressed = 0;
 boolean combo_pressed = false;
 boolean is_upbeat = false;
 
@@ -390,10 +392,14 @@ void loop()
 
   if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1)
   {
-    if (checkCombo(show_combo, sizeof(show_combo) / sizeof(show_combo[0]), pressed_keys)) {
-      if (!main_mode) {
+    if (checkCombo(show_combo, sizeof(show_combo) / sizeof(show_combo[0]), pressed_keys))
+    {
+      if (!main_mode)
+      {
         trellis.setPixelColor(back_combo[0], ref_color_1);
-      } else { 
+      }
+      else
+      {
         trellis.setPixelColor(shift_combo[0], ref_color_1);
       }
       trellis.setPixelColor(clear_combo[0], ref_color_2);
@@ -447,10 +453,10 @@ void loop()
 
     if (e.bit.EVENT == KEY_JUST_PRESSED)
     {
-      Serial.println(" pressed\n");
       Serial.print("key: ");
       Serial.println(key);
       pressed_keys[key] = true;
+      when_key_was_pressed = millis();
       if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1)
       {
         combo_pressed = true;
@@ -598,23 +604,34 @@ void loop()
     }
     else if (e.bit.EVENT == KEY_JUST_RELEASED)
     {
-      Serial.println(" released\n");
-
       pressed_keys[key] = false;
-
       if (!combo_pressed)
       {
         if (main_mode)
         {
-          main_grid[col + getColumnOffset(tick)][row + row_offset].toggle(); // toggle note
-
-          trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color); // toggle key light
+          if (millis() - when_key_was_pressed < HOLD_TIME)
+          {
+            main_grid[col + getColumnOffset(tick)][row + row_offset].toggle();
+            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color);
+          }
+          else
+          {
+            main_grid[col + getColumnOffset(tick)][row + row_offset].toggle_accent();
+            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color);
+          }
         }
         else
         {
-          shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle(); // toggle note
-
-          trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color); // toggle key light
+          if (millis() - when_key_was_pressed < HOLD_TIME)
+          {
+            shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle();
+            trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color);
+          }
+          else
+          {
+            shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle_accent();
+            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color);
+          }
         }
 
         if (manual_note_play_mode)
