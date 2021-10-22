@@ -218,12 +218,14 @@ int mapKeyToLeftHalfOfTrellis(int key)
   }
 }
 
-int mapKeyToRow(int key) {
+int mapKeyToRow(int key)
+{
   return (mapKeyToLeftHalfOfTrellis(key) * -1) + 15;
 }
 
-int getPostitionFromTick(int tick, int last_step, int swing) {
-  return (int)((tick%(last_step*12)/(float)swing) / 2);
+int getPostitionFromTick(int tick, int last_step, int swing)
+{
+  return (int)((tick % (last_step * 12) / (float)swing) / 2);
 }
 
 void setup()
@@ -339,7 +341,8 @@ void loop()
         }
       }
     }
-    else if ((int)(tick % 12) == swing - (swing / 2)) {
+    else if ((int)(tick % 12) == swing - (swing / 2))
+    {
       is_upbeat = true;
     }
     else if ((int)(tick % 12) == swing)
@@ -362,7 +365,8 @@ void loop()
         }
       }
     }
-    else if ((int)(tick % 12) == swing + ((12 - swing) / 2)) {
+    else if ((int)(tick % 12) == swing + ((12 - swing) / 2))
+    {
       is_upbeat = false;
     }
     tick++;
@@ -593,13 +597,13 @@ void loop()
       {
         if (main_mode)
         {
-          main_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                           // toggle note
+          main_grid[col + getColumnOffset(tick)][row + row_offset].toggle(); // toggle note
 
           trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color); // toggle key light
         }
         else
         {
-          shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle();                            // toggle note
+          shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle(); // toggle note
 
           trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_on ? shift_color : off_color); // toggle key light
         }
