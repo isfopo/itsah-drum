@@ -48,8 +48,10 @@ boolean manual_note_play_mode = false;
 boolean manual_note_record_mode = false;
 
 // combos
-int back_combo[] = {7, 28, 31};
-int shift_combo[] = {7, 20, 31};
+int show_combo[] = {7, 31};
+int back_combo[] = {28, 7, 31};
+int shift_combo[] = {20, 7, 31};
+int clear_combo[] = {4, 7, 31};
 int offset_init_combo[] = {6, 30};
 int offset_up_combo[] = {11, 6, 30};
 int offset_down_combo[] = {19, 6, 30};
@@ -62,7 +64,6 @@ int swing_8_combo[] = {12, 14, 30};
 int swing_9_combo[] = {4, 14, 30};
 int manual_note_play_combo[] = {13, 29};
 int manual_note_record_combo[] = {5, 29};
-int clear_combo[] = {4, 7, 31};
 
 // floating point map
 float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp)
@@ -389,7 +390,15 @@ void loop()
 
   if (numberOfButtonPressed(pressed_keys, sizeof(pressed_keys)) > 1)
   {
-    if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys))
+    if (checkCombo(show_combo, sizeof(show_combo) / sizeof(show_combo[0]), pressed_keys)) {
+      if (!main_mode) {
+        trellis.setPixelColor(back_combo[0], ref_color_1);
+      } else { 
+        trellis.setPixelColor(shift_combo[0], ref_color_1);
+      }
+      trellis.setPixelColor(clear_combo[0], ref_color_2);
+    }
+    else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys))
     {
       // light up offset keys for reference
       trellis.setPixelColor(offset_up_combo[0], ref_color_1);
