@@ -23,6 +23,8 @@ uint32_t column_color = 0XEDECEE;
 uint32_t shift_column_color = 0XEDECEE;
 uint32_t main_color = 0X61FFCA;
 uint32_t shift_color = 0xA277FF;
+uint32_t main_accent_color = 0X61FF00; // should be the same color as main color, but lighter
+uint32_t shift_accent_color = 0xFF77FF;
 uint32_t ref_color_1 = 0x00F0FF;
 uint32_t ref_color_2 = 0xFF00FF;
 uint32_t off_color = 0X0;
@@ -309,7 +311,7 @@ void loop()
         {
           for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
           {
-            trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? main_color : off_color);
+            trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? main_grid[i + getColumnOffset(tick)][j + row_offset].is_accented ? main_accent_color : main_color : off_color);
           }
         }
       }
@@ -319,7 +321,7 @@ void loop()
         {
           for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
           {
-            trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? shift_color : off_color);
+            trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? shift_grid[i + getColumnOffset(tick)][j + row_offset].is_accented ? shift_accent_color : shift_color : off_color);
           }
         }
       }
@@ -339,7 +341,7 @@ void loop()
         {
           if (isInRangeOfRows(note.midi))
           {
-            trellis.setPixelColor(note.key, note.is_on ? main_color : off_color);
+            trellis.setPixelColor(note.key, note.is_on ? note.is_accented ? main_accent_color : main_color : off_color);
           }
         }
       }
@@ -363,7 +365,7 @@ void loop()
         {
           if (isInRangeOfRows(note.midi))
           {
-            trellis.setPixelColor(note.key, note.is_on ? shift_color : off_color);
+            trellis.setPixelColor(note.key, note.is_on ? note.is_accented ? shift_accent_color : shift_color : off_color);
           }
         }
       }
@@ -484,7 +486,7 @@ void loop()
           {
             for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
             {
-              trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+              trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_grid[i][j + row_offset].is_accented ? shift_accent_color : shift_color : off_color);
             }
           }
         }
@@ -495,7 +497,7 @@ void loop()
           {
             for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
             {
-              trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+              trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_grid[i][j + row_offset].is_accented ? main_accent_color : main_color : off_color);
             }
           }
         }
@@ -510,7 +512,7 @@ void loop()
               {
                 for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+                  trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_grid[i][j + row_offset].is_accented ? main_accent_color : main_color : off_color);
                 }
               }
             }
@@ -520,7 +522,7 @@ void loop()
               {
                 for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+                  trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_grid[i][j + row_offset].is_accented ? shift_accent_color : shift_color : off_color);
                 }
               }
             }
@@ -537,7 +539,7 @@ void loop()
               {
                 for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_color : off_color);
+                  trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i][j + row_offset].is_on ? main_grid[i][j + row_offset].is_accented ? main_accent_color : main_color : off_color);
                 }
               }
             }
@@ -547,7 +549,7 @@ void loop()
               {
                 for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
                 {
-                  trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_color : off_color);
+                  trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i][j + row_offset].is_on ? shift_grid[i][j + row_offset].is_accented ? shift_accent_color : shift_color : off_color);
                 }
               }
             }
@@ -617,7 +619,7 @@ void loop()
           else
           {
             main_grid[col + getColumnOffset(tick)][row + row_offset].toggle_accent();
-            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color);
+            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_accented ? main_accent_color : off_color);
           }
         }
         else
@@ -630,7 +632,7 @@ void loop()
           else
           {
             shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle_accent();
-            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_on ? main_color : off_color);
+            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_accented ? shift_accent_color : off_color);
           }
         }
 
@@ -649,7 +651,7 @@ void loop()
             {
               for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
               {
-                trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? main_color : off_color);
+                trellis.setPixelColor(coordinatesToKey(i, j), main_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? main_grid[i][j + row_offset].is_accented ? main_accent_color : main_color : off_color);
               }
             }
           }
@@ -659,7 +661,7 @@ void loop()
             {
               for (int j = 0; j < NUMBER_OF_ROWS_ON_TRELLIS; j++)
               {
-                trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? shift_color : off_color);
+                trellis.setPixelColor(coordinatesToKey(i, j), shift_grid[i + getColumnOffset(tick)][j + row_offset].is_on ? shift_grid[i][j + row_offset].is_accented ? shift_accent_color : shift_color : off_color);
               }
             }
           }
