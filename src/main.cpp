@@ -55,19 +55,19 @@ boolean manual_cc_mode = false;
 
 // combos
 int show_combo[] = {7, 31};
-int back_combo[] = {28, 7, 31};
-int shift_combo[] = {20, 7, 31};
-int clear_combo[] = {4, 7, 31};
-int offset_init_combo[] = {6, 30};
-int offset_up_combo[] = {11, 6, 30};
-int offset_down_combo[] = {19, 6, 30};
-int last_step_left_combo[] = {18, 6, 30};
-int last_step_right_combo[] = {20, 6, 30};
-int swing_init_combo[] = {14, 30};
-int swing_6_combo[] = {28, 14, 30};
-int swing_7_combo[] = {20, 14, 30};
-int swing_8_combo[] = {12, 14, 30};
-int swing_9_combo[] = {4, 14, 30};
+int back_combo[] = {12, 7, 31};
+int shift_combo[] = {4, 7, 31};
+int clear_combo[] = {26, 7, 31};
+int offset_init_combo[] = {7, 31};
+int offset_up_combo[] = {13, 7, 31};
+int offset_down_combo[] = {21, 7, 31};
+int last_step_left_combo[] = {20, 7, 31};
+int last_step_right_combo[] = {22, 7, 31};
+int swing_init_combo[] = {7, 31};
+int swing_6_combo[] = {27, 7, 31};
+int swing_7_combo[] = {19, 7, 31};
+int swing_8_combo[] = {11, 7, 31};
+int swing_9_combo[] = {3, 7, 31};
 int manual_note_play_combo[] = {13, 29};
 int manual_note_record_combo[] = {5, 29};
 int manual_cc_combo[] = {4, 28};
@@ -427,18 +427,10 @@ void loop()
         trellis.setPixelColor(shift_combo[0], ref_color_1);
       }
       trellis.setPixelColor(clear_combo[0], ref_color_2);
-    }
-    else if (checkCombo(offset_init_combo, sizeof(offset_init_combo) / sizeof(offset_init_combo[0]), pressed_keys))
-    {
-      // light up offset keys for reference
       trellis.setPixelColor(offset_up_combo[0], ref_color_1);
       trellis.setPixelColor(offset_down_combo[0], ref_color_1);
       trellis.setPixelColor(last_step_left_combo[0], ref_color_2);
       trellis.setPixelColor(last_step_right_combo[0], ref_color_2);
-    }
-    else if (checkCombo(swing_init_combo, sizeof(swing_init_combo) / sizeof(swing_init_combo[0]), pressed_keys))
-    {
-      // light up swing keys for reference
       trellis.setPixelColor(swing_6_combo[0], ref_color_1);
       trellis.setPixelColor(swing_7_combo[0], ref_color_1);
       trellis.setPixelColor(swing_8_combo[0], ref_color_1);
