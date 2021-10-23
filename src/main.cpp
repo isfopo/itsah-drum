@@ -668,7 +668,7 @@ void loop()
           else
           {
             shift_grid[col + getColumnOffset(tick)][row + row_offset].toggle_accent();
-            trellis.setPixelColor(key, main_grid[col][row + row_offset].is_accented ? shift_accent_color : off_color);
+            trellis.setPixelColor(key, shift_grid[col][row + row_offset].is_accented ? shift_accent_color : off_color);
           }
         }
 
