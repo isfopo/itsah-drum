@@ -403,6 +403,12 @@ void loop()
   { // transport end
     Serial.println("stop");
   }
+  else if (midi_in.header == 9) {
+    if (midi_in.byte2 == 0) {
+      tick = 0;
+      is_upbeat = false;
+    }
+  }
   else if (midi_in.header != 0)
   {
     Serial.println("message in");
