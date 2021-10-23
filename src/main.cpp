@@ -20,14 +20,15 @@ uint32_t tick = 0;
 
 // colors
 uint32_t column_color = 0XEDECEE;
-uint32_t shift_column_color = 0XEDECEE;
-uint32_t main_color = 0X61FFCA;
-uint32_t shift_color = 0xA277FF;
-uint32_t main_accent_color = 0X61FF00; // should be the same color as main color, but lighter
-uint32_t shift_accent_color = 0xFF77FF;
-uint32_t ref_color_1 = 0x00F0FF;
-uint32_t ref_color_2 = 0xFF00FF;
-uint32_t ref_color_3 = 0xFF0F00;
+uint32_t main_color = 0X47FFC2;
+uint32_t main_accent_color = 0X007A52; 
+uint32_t shift_color = 0x9D70FF;
+uint32_t shift_accent_color = 0x2D008F;
+uint32_t ref_color_1 = 0xFFCA85;
+uint32_t ref_color_2 = 0xF694FF;
+uint32_t ref_color_3 = 0x82E2FF;
+uint32_t ref_color_4 = 0x8E5572;
+uint32_t clear_color = 0xFF6767;
 uint32_t off_color = 0X0;
 
 const int NUMBER_OF_COLUMNS = 32;
@@ -426,15 +427,15 @@ void loop()
       {
         trellis.setPixelColor(shift_combo[0], ref_color_1);
       }
-      trellis.setPixelColor(clear_combo[0], ref_color_2);
-      trellis.setPixelColor(offset_up_combo[0], ref_color_1);
-      trellis.setPixelColor(offset_down_combo[0], ref_color_1);
-      trellis.setPixelColor(last_step_left_combo[0], ref_color_2);
-      trellis.setPixelColor(last_step_right_combo[0], ref_color_2);
-      trellis.setPixelColor(swing_6_combo[0], ref_color_1);
-      trellis.setPixelColor(swing_7_combo[0], ref_color_1);
-      trellis.setPixelColor(swing_8_combo[0], ref_color_1);
-      trellis.setPixelColor(swing_9_combo[0], ref_color_1);
+      trellis.setPixelColor(clear_combo[0], clear_color);
+      trellis.setPixelColor(offset_up_combo[0], ref_color_2);
+      trellis.setPixelColor(offset_down_combo[0], ref_color_2);
+      trellis.setPixelColor(last_step_left_combo[0], ref_color_3);
+      trellis.setPixelColor(last_step_right_combo[0], ref_color_3);
+      trellis.setPixelColor(swing_6_combo[0], ref_color_4);
+      trellis.setPixelColor(swing_7_combo[0], ref_color_4);
+      trellis.setPixelColor(swing_8_combo[0], ref_color_4);
+      trellis.setPixelColor(swing_9_combo[0], ref_color_4);
     }
     else if (checkCombo(manual_note_play_combo, sizeof(manual_note_play_combo) / sizeof(manual_note_play_combo[0]), pressed_keys))
     {
